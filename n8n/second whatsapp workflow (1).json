@@ -1,0 +1,116 @@
+{
+  "name": "second whatsapp workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        0
+      ],
+      "id": "1f0a68fe-9998-45e0-9d86-cc5435cb00d8",
+      "name": "n8n-app-2",
+      "webhookId": "2c350b05-7f87-424a-a05e-4bbf17bc0b17",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "UTjlMBazRmvpbNLf",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "902442322961499",
+        "recipientPhoneNumber": "+91 9671690311",
+        "textBody": "={{ $json.messages[0].text.body }}",
+        "additionalFields": {
+          "previewUrl": false
+        }
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        0
+      ],
+      "id": "ad050280-1846-4c15-b0aa-f5350168a0ab",
+      "name": "n8n-app-2-temp",
+      "webhookId": "0708623f-e03a-4b61-9e6e-122de9c4956b",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "NxcuRGrLHrQvLXlM",
+          "name": "WhatsApp account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "902442322961499",
+        "recipientPhoneNumber": " +91 9671690311",
+        "textBody": "={{ $('n8n-app-2').item.json.messages[0].text.body }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -192,
+        0
+      ],
+      "id": "feee5989-f0d3-4b9f-8717-753f225ade2c",
+      "name": "Send message",
+      "webhookId": "5499de7b-57b1-49cf-b36b-548c31cf4c83",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "NxcuRGrLHrQvLXlM",
+          "name": "WhatsApp account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "n8n-app-2": {
+      "main": [
+        [
+          {
+            "node": "n8n-app-2-temp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n-app-2-temp": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "bef98f87-9a0b-4bf5-82ac-d30cff0e22c6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "22e6636b35cfae27607b7e72bcfaa021efa14e5b87bbe7db411557ea4c33f762"
+  },
+  "id": "EZboEXOlb_ImBitN-LDO2",
+  "tags": []
+}

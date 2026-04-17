@@ -1,0 +1,196 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -720,
+        -32
+      ],
+      "id": "f7a627ff-531b-4334-8318-ff53d7a6b6da",
+      "name": "When chat message received",
+      "webhookId": "cd616e5c-cc40-4c97-bd25-d83d28252d82"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -256,
+        -64
+      ],
+      "id": "5d3134ed-9707-4904-9965-9bf8a7788e15",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        208
+      ],
+      "id": "0c4d349a-d4ab-4c9b-a922-ad818c1de529",
+      "name": "Wikipedia"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -176,
+        288
+      ],
+      "id": "a429ce70-a1bb-4ad7-a09c-50af2bea8deb",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        112,
+        112
+      ],
+      "id": "e702ae15-a281-4b76-8317-9543f31f7aa5",
+      "name": "Search in Tavily",
+      "credentials": {
+        "tavilyApi": {
+          "id": "2ga5hhMkaQUpQSY6",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "get prices for aiwithtanya consultancy",
+        "url": "https://mp4a9a3f9f272bf14f6d.free.beeceptor.com/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        400,
+        48
+      ],
+      "id": "04499fe8-45ec-41ff-abe5-fe31786a668a",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -400,
+        144
+      ],
+      "id": "c26536ee-ca52-4b05-b024-c9d00e19d036",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "3M1pOtzsVHVnpBep",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search in Tavily": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "95bf9a4c-025d-4b02-aaaf-b1e16701b15a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "22e6636b35cfae27607b7e72bcfaa021efa14e5b87bbe7db411557ea4c33f762"
+  },
+  "id": "_Fk6xPHsx8fOFsUgMpdBa",
+  "tags": []
+}

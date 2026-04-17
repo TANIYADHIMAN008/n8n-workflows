@@ -1,0 +1,235 @@
+{
+  "name": "my first project",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1712,
+        -112
+      ],
+      "id": "0b9578c5-21d2-4be3-9e8f-8f9f163e5e19",
+      "name": "Telegram Trigger",
+      "webhookId": "24b76627-9818-4b2f-b2b2-51b57d455b4a",
+      "credentials": {
+        "telegramApi": {
+          "id": "s1r4wKjpHLDbBcNS",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://core.telegram.org/bot {{ $vars.UGC_VEDIO_creator }}/getFile?file_id=  {{ $json.message.photo[3] }}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1488,
+        0
+      ],
+      "id": "5fe41f0f-f40b-41af-af82-c4d613353611",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c7529219-4082-414b-b3bd-f888630b3990",
+              "name": "img_url",
+              "value": "=https://core.telegram.org/bot  {{ $vars.telegrambotkey }}/{{ $('Telegram Trigger').item.json.message.photo[2].file_id }}",
+              "type": "string"
+            },
+            {
+              "id": "2a7bbac1-efdb-40ab-9b9e-2e8a0abb0dc4",
+              "name": "prompt",
+              "value": "={{ $('Telegram Trigger').item.json.message.caption }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1312,
+        -144
+      ],
+      "id": "a8048210-9145-4d7c-9385-d0cd88b06534",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.img_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1088,
+        0
+      ],
+      "id": "d743f996-787a-43b8-ae90-482a72a332cb",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Hey we got your awesome image. now let me start editing the same",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -880,
+        -144
+      ],
+      "id": "fea6761e-f660-451a-8f99-8996db84061a",
+      "name": "Send a text message",
+      "webhookId": "c99ff7ce-f0d2-4aa0-8f93-7c434d7f7dbd",
+      "credentials": {
+        "telegramApi": {
+          "id": "rDfe9OOB7ypoIi6O",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-goog-api-key",
+              "value": "AIzaSyCAPWPKi6FoUTUC2pSjucXNky04kAVPMaw"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"inline_data\": {\n            \"mime_type\": \"image/png\",\n            \"data\": \"{{ $('HTTP Request1').item.json.data }}    \"\n          }\n        },\n        {\n          \"text\": \"{{ $('Edit Fields').item.json.prompt }}       \"\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"responseModalities\": [\"TEXT\"]\n  }\n}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -672,
+        64
+      ],
+      "id": "0180cfb0-59c2-43e6-86a2-e73c4ae770cc",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -528,
+        -256
+      ],
+      "id": "52b00b89-e79a-40d6-aaa0-67c99962596a",
+      "name": "Extract from File1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "833ccdef-5071-4e1d-9c94-8769b17c0ef7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "22e6636b35cfae27607b7e72bcfaa021efa14e5b87bbe7db411557ea4c33f762"
+  },
+  "id": "elPNg1sAIy3u6f_ITS3Y1",
+  "tags": [
+    {
+      "updatedAt": "2026-02-05T08:07:59.012Z",
+      "createdAt": "2026-02-05T08:07:59.012Z",
+      "id": "QUIrBGWAud2zUQfg",
+      "name": "First project"
+    }
+  ]
+}

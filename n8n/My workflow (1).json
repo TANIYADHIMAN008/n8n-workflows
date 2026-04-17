@@ -1,0 +1,382 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": " clothing  brand Feedback form ",
+        "formDescription": "Hey how are you ,\nPlezz fill the  feedback.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Rating",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "1"
+                  },
+                  {
+                    "option": "2"
+                  },
+                  {
+                    "option": "3"
+                  },
+                  {
+                    "option": "4"
+                  },
+                  {
+                    "option": "5"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Name"
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email"
+            },
+            {
+              "fieldLabel": "Age",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "Feedback here ",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "click here "
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -560,
+        -16
+      ],
+      "id": "463882fd-9d4e-42d1-bd60-b87f611e41ee",
+      "name": "On form submission",
+      "webhookId": "dc87c237-bf80-4475-90de-2f6c4389bde1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1txnNHD23c0AwDLMqPXTJfq8YwI0oSrVXdjs0dn8ClBI",
+          "mode": "list",
+          "cachedResultName": "own sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1txnNHD23c0AwDLMqPXTJfq8YwI0oSrVXdjs0dn8ClBI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1txnNHD23c0AwDLMqPXTJfq8YwI0oSrVXdjs0dn8ClBI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.Name }}",
+            "Email": "={{ $json.Email }}",
+            "Feedback here": "={{ $json['Feedback here '] }}",
+            "Age": "={{ $json.Age }}",
+            "Rating ": "={{ $json.Rating }}",
+            "date submitted": "={{ $json.Date }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Feedback here",
+              "displayName": "Feedback here",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Rating ",
+              "displayName": "Rating ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date submitted",
+              "displayName": "date submitted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -32,
+        -16
+      ],
+      "id": "415899a2-38ef-472e-be92-13e50f505c77",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eiW8gooO3HOltBKK",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c97f58d0-a95f-4bd5-9e0d-a53b89c1e8d9",
+              "leftValue": "={{ $json['Rating '] }}",
+              "rightValue": 4,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        256,
+        0
+      ],
+      "id": "511d7b5b-9322-47ee-b811-0e54a93d0104",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "aiwithtanya@gmail.com",
+        "subject": "low rating",
+        "emailType": "text",
+        "message": "=Hey thanks for for give your feedback \n{{ $('Append row in sheet').item.json.Name }}\nYou give use this rating \n{{ $('Append row in sheet').item.json['Rating '] }} i hope next time we try to give oure best to you.  \nif you fell any issue so contack with {{ $json.Email }}",
+        "options": {
+          "appendAttribution": false,
+          "replyTo": "={{ $json.Email }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        -48
+      ],
+      "id": "972506d1-81ed-4bf7-a76a-fe906292b06a",
+      "name": "Send a message",
+      "webhookId": "c9a165f8-8a0f-40d3-9c95-d82260667c09",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "RTlPpIyDx2MGqC3D",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "aiwithtanya@gmail.com",
+        "subject": "high rating",
+        "emailType": "text",
+        "message": "=Hey thanks for for give your feedback \n{{ $('Append row in sheet').item.json.Name }}\nYou give use this rating \n{{ $('Append row in sheet').item.json['Rating '] }} i hope next time we try to give oure best to you.  \nif you fell any issue so contack with\naiwithtanya@gmail.com",
+        "options": {
+          "appendAttribution": false,
+          "replyTo": "={{ $json.Email }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        160
+      ],
+      "id": "9f0ed45b-54c6-4bfa-8970-9afd95e4e785",
+      "name": "Send a message1",
+      "webhookId": "c9a165f8-8a0f-40d3-9c95-d82260667c09",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "RTlPpIyDx2MGqC3D",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "39197aa6-82ad-4bbf-97ca-250d57adc3c8",
+              "name": "Name",
+              "value": "={{ $json.Rating }}",
+              "type": "string"
+            },
+            {
+              "id": "6cc5626e-971e-48cf-a816-5aea60cf9d11",
+              "name": "Name",
+              "value": "={{ $json.Name.toLowerCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "d6c54036-98d7-4c41-9850-d282ce3d548a",
+              "name": "Email",
+              "value": "={{ $json.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "b3cba925-c082-470d-ab66-2db8c2889e79",
+              "name": "Feedback here ",
+              "value": "={{ $json['Feedback here '] }}",
+              "type": "string"
+            },
+            {
+              "id": "9b595bde-7b33-4956-8aa5-1bed434b6776",
+              "name": "Date",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -272,
+        -16
+      ],
+      "id": "c1fb7ea6-f7b0-41f1-bcd7-be0db94dc57c",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        []
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "88722377-a4db-4949-ac89-94fc88aa6d90",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "227d002208068acfa5468f56b5d8df0b668f68c44a4ad12f98d843211baf2fa0"
+  },
+  "id": "4mzPgZSvrlKFVojZU5hiI",
+  "tags": []
+}
